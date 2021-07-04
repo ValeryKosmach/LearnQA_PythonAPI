@@ -25,3 +25,17 @@ try:
     print(parsed_response_text)
 except JSONDecodeError:
     print("response is not JSON format")
+
+#password = [123]
+
+# удалить дубликаты
+#new_data = list(set(password))
+#print(new_data)
+#for i in range(len(new_data)):
+session = requests.Session()
+authentication = session.post("https://playground.learnqa.ru/ajax/api/get_secret_password_homework", data={"login":"super_admin", "password":"000000"})
+print(authentication.text)
+    get_cookie = session.cookies.get_dict()["auth_cookie"]
+    auth_cookie = requests.get("https://playground.learnqa.ru/ajax/api/check_auth_cookie")
+    #if auth_cookie.text != "You are NOT authorized":
+    print(auth_cookie.text)
