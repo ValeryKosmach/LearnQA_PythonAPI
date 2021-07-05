@@ -29,17 +29,17 @@ password = "password", "password",	123456,	123456, 123456,	123456, 123456, 12345
 # убрать дубликаты
 new_data = list(set(password))
 
-for i in new_data:
-    response1 = requests.post("https://playground.learnqa.ru/ajax/api/get_secret_password_homework", data={"login":"super_admin", "password":new_data})
+for i in range(len(new_data)):
+    response1 = requests.post("https://playground.learnqa.ru/ajax/api/get_secret_password_homework", data={"login":"super_admin", "password":new_data[i]})
     cookie_value = response1.cookies.get('auth_cookie')
     cookies = {'auth_cookie': cookie_value}
 
     response2 = requests.post("https://playground.learnqa.ru/ajax/api/check_auth_cookie", cookies=cookies)
     if response2.text != "You are NOT authorized":
         print(response2.text)
-        print(i, " - Пароль НАЙДЕН!!!")
+        print(new_data[i], " - Пароль НАЙДЕН!!!")
     else:
         print(response2.text)
-        print(i, " - этот пароль неверный")
+        print(new_data[i], " - этот пароль неверный")
 
 
