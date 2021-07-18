@@ -3,7 +3,7 @@ import os
 from requests import Response
 
 class Logger:
-    file_name = f"../logs/log_" + str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")) + ".log"
+    file_name = f"logs/log_" + str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")) + ".log"
     #"../logs/log_ - если тесты запускаются через PyCharm IDE
     #"logs/log_" - если тесты запускаются через Terminal
 
