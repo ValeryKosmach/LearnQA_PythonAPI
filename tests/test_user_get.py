@@ -7,9 +7,9 @@ class TestUserGet(BaseCase):
         response = MyRequests.get("/user/2")
 
         Assertions.assert_json_has_key(response, "username")
-        Assertions.assert_json_has_not_key(response, "email")
-        Assertions.assert_json_has_not_key(response, "firstName")
-        Assertions.assert_json_has_not_key(response, "lastName")
+        Assertions.assert_json_has_not_keys(response, "email")
+        Assertions.assert_json_has_not_keys(response, "firstName")
+        Assertions.assert_json_has_not_keys(response, "lastName")
 
     def test_get_user_details_auth_as_same_user(self):
         data = {
@@ -31,3 +31,27 @@ class TestUserGet(BaseCase):
 
         expected_fields = ["username", "email", "firstName", "lastName"]
         Assertions.assert_json_has_keys(response2, expected_fields)
+
+    def setup(self):
+        # Auth of first user
+        data = {
+            'email': 'vinkotov@example.com',
+            'password': '1234'
+        }
+        response1 = MyRequests.post("/user/login", data=data)
+
+        self.auth_sid = self.get_cookie(response1, "auth_sid")
+        self.token = self.get_header(response1, "x-csrf-token")
+        self.user_id_from_auth_method = self.get_json_value(response1, "user_id")
+
+    def test_authorized_user_gets_user_details_another_user(self):
+        response = MyRequests.get(
+            "/user/1",
+            headers={"x-csrf-token": self.token},
+            cookies={"auth_sid": self.auth_sid}
+        )
+
+        Assertions.assert_json_has_key(response, "username")
+        Assertions.assert_json_has_not_keys(response, "email")
+        Assertions.assert_json_has_not_keys(response, "firstName")
+        Assertions.assert_json_has_not_keys(response, "lastName")
