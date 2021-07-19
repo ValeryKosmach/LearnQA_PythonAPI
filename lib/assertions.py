@@ -35,7 +35,7 @@ class Assertions:
             f"Unexpected status code! Expected: {expected_status_code}. Actual: {response.status_code}"
 
     @staticmethod
-    def assert_json_has_not_key(response: Response, name):
+    def assert_json_has_not_keys(response: Response, name):
         try:
             response_as_dict = response.json()
         except json.decoder.JSONDecoderError:
