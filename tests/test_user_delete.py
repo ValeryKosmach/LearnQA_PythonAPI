@@ -1,10 +1,13 @@
+import allure
 from lib.my_requests import MyRequests
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 
 
+@allure.epic("Delete user")
 class TestUserDelete(BaseCase):
-    # Register & auth user
+
+    @allure.description("Preconditions. Register & auth user")
     def setup(self):
         register_data = self.prepare_registration_data()
         response1 = MyRequests.post("/user", data=register_data)
@@ -25,6 +28,7 @@ class TestUserDelete(BaseCase):
         self.auth_sid = self.get_cookie(response2, "auth_sid")
         self.token = self.get_header(response2, "x-csrf-token")
 
+    @allure.description("Attempts to delete user by id=2 ")
     def test_delete_user_by_id2(self):
         data = {
             'email': 'vinkotov@example.com',
@@ -43,7 +47,7 @@ class TestUserDelete(BaseCase):
         Assertions.assert_code_status(response2, 400)
         Assertions.assert_response_content(response2, "Please, do not delete test users with ID 1, 2, 3, 4 or 5.")
 
-
+    @allure.description("Attempts to delete user by himself")
     def test_delete_user_by_himself(self):
         # Delete user by himself
         response1 = MyRequests.delete(f"/user/{self.user_id}",
@@ -60,7 +64,7 @@ class TestUserDelete(BaseCase):
         Assertions.assert_code_status(response2, 404)
         Assertions.assert_response_content(response2, "User not found")
 
-
+    @allure.description("Attempts to delete one user by another user")
     def test_delete_user_by_other_user(self):
         # Register new user
         new_user = self.prepare_registration_data()

@@ -4,9 +4,12 @@ from lib.assertions import Assertions
 from random import choice
 from string import ascii_letters
 import pytest
+import allure
 
+@allure.epic("Register user")
 class TestUserRegister(BaseCase):
 
+    @allure.severity(allure.severity_level.BLOCKER)
     def test_create_user_successfully(self):
         data = self.prepare_registration_data()
 
@@ -14,6 +17,7 @@ class TestUserRegister(BaseCase):
         Assertions.assert_code_status(response, 200)
         Assertions.assert_json_has_key(response, "id")
 
+    @allure.severity(allure.severity_level.NORMAL)
     def test_create_user_with_existing_email(self):
         email = 'vinkotov@example.com'
         data = self.prepare_registration_data(email)
@@ -22,6 +26,7 @@ class TestUserRegister(BaseCase):
         Assertions.assert_code_status(response, 400)
         Assertions.assert_response_content(response, f"Users with email '{email}' already exists")
 
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_create_user_with_incorrect_email(self):
         email = "vinkotovexample.com"
         data = self.prepare_registration_data(email)
@@ -30,6 +35,7 @@ class TestUserRegister(BaseCase):
         Assertions.assert_code_status(response, 400)
         Assertions.assert_response_content(response, "Invalid email format")
 
+    @allure.severity(allure.severity_level.NORMAL)
     def test_create_user_with_one_firstname_symbol(self):
         data = {
             'password': '123',
@@ -43,6 +49,7 @@ class TestUserRegister(BaseCase):
         Assertions.assert_code_status(response, 400)
         Assertions.assert_response_content(response, "The value of 'firstName' field is too short")
 
+    @allure.severity(allure.severity_level.MINOR)
     def test_create_user_with_long_firstname(self):
         data = {
             'password': '123',
@@ -69,6 +76,7 @@ class TestUserRegister(BaseCase):
         ({'password': '123', 'username': 'learnqa', 'firstName': 'learnqa', 'lastName': 'learnqa'}, 'email')
     ]
 
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.parametrize("data", data_without_one_param)
     def test_create_user_wo_one_param(self, data):
         data, missed_param = data

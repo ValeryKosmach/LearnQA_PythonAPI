@@ -1,10 +1,14 @@
+import allure
 from lib.my_requests import MyRequests
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 from random import choice
 from string import ascii_letters
 
+
+@allure.epic("Edit user")
 class TestUserEdit(BaseCase):
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_edit_just_created_user(self):
         # REGISTER
         register_data = self.prepare_registration_data()
@@ -52,6 +56,7 @@ class TestUserEdit(BaseCase):
             "Wrong name of the user after edit"
         )
 
+    @allure.description("Precondition, register user")
     def setup(self):
         # Register user 1
         first_user_data = self.prepare_registration_data()
@@ -74,6 +79,7 @@ class TestUserEdit(BaseCase):
         self.auth_sid = self.get_cookie(response2, "auth_sid")
         self.token = self.get_header(response2, "x-csrf-token")
 
+    @allure.severity(allure.severity_level.MINOR)
     def test_edit_unauthorized_user(self):
         new_name = "Changed Name Again"
         response = MyRequests.put(f"/user/{self.user_id}",
@@ -83,6 +89,7 @@ class TestUserEdit(BaseCase):
         Assertions.assert_code_status(response, 400)
         Assertions.assert_response_content(response, "Auth token not supplied")
 
+    @allure.severity(allure.severity_level.MINOR)
     def test_edit_one_user_by_another(self):
         # Register user 2
         second_user_data = self.prepare_registration_data()
@@ -114,6 +121,7 @@ class TestUserEdit(BaseCase):
             "Oops!Username was edit by first user!"
         )
 
+    @allure.severity(allure.severity_level.NORMAL)
     def test_edit_user_with_incorrect_email(self):
         incorrect_email = "example.com"
         response = MyRequests.put(f"/user/{self.user_id}",
@@ -124,6 +132,7 @@ class TestUserEdit(BaseCase):
         Assertions.assert_code_status(response, 400)
         Assertions.assert_response_content(response, "Invalid email format")
 
+    @allure.severity(allure.severity_level.NORMAL)
     def test_edit_user_firstname_short(self):
         new_first_name = ''.join(choice(ascii_letters) for i in range(1))
         response = MyRequests.put(f"/user/{self.user_id}",
